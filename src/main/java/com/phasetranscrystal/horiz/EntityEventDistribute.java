@@ -16,9 +16,9 @@ import java.util.function.Consumer;
 public class EntityEventDistribute {
 
     //WARN 不要直接修改这些 请使用下面的add与remove
-    public final Multimap<Class<? extends Event>, Consumer<? extends Event>> listeners = HashMultimap.create();
-    public final MarkedTreeElement markedListeners = new MarkedTreeElement();
-    public final HashMap<Class<? extends Event>, Integer> eventHashCache = new HashMap<>();
+    private final Multimap<Class<? extends Event>, Consumer<? extends Event>> listeners = HashMultimap.create();
+    private final MarkedTreeElement markedListeners = new MarkedTreeElement();
+    private final HashMap<Class<? extends Event>, Integer> eventHashCache = new HashMap<>();
 
     /**
      * 添加带标记的事件监听器。
@@ -105,6 +105,5 @@ public class EntityEventDistribute {
         List.copyOf(listeners.get(event.getClass())).forEach(consumer -> ((Consumer<T>) consumer).accept(event));
         eventHashCache.put(event.getClass(), event.hashCode());
     }
-
 }
 

@@ -141,7 +141,7 @@ the forwarding after the first time will be filtered out.
 
 # Contribution
 
-Contributions to the Nonatomic mod are welcome. You can submit issues to report problems or fork this project to submit
+Contributions to the Horiz mod are welcome. You can submit issues to report problems or fork this project to submit
 your improvements.
 
 # Developers
