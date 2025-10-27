@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.*;
 
 public class MarkedTreeElement {
+
     public final HashSet<IdentEvent<?>> obj = new HashSet<>();
     public final HashMap<ResourceLocation, MarkedTreeElement> ext = new HashMap<>();
 

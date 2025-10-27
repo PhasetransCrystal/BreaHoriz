@@ -1,6 +1,5 @@
 package com.phasetranscrystal.horiz;
 
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.ICancellableEvent;
@@ -18,10 +17,11 @@ import java.util.function.Consumer;
 
 @EventBusSubscriber(modid = Horiz.MODID)
 public class EventConsumer {
+
     public static final Consumer<EntityEvent> consumer = event -> event.getEntity().getExistingData(Horiz.EVENT_DISTRIBUTE).ifPresent(d -> d.post(event));
 
     public static void bootstrapConsumer() {
-//        addListener(EntityJoinLevelEvent.class);
+        // addListener(EntityJoinLevelEvent.class);
         addListener(EntityTickEvent.Post.class);
 
         addListener(LivingIncomingDamageEvent.class);
@@ -143,19 +143,23 @@ public class EventConsumer {
         if (!event.getSource().isDirect() && event.getSource().getDirectEntity() != null) {
             NeoForge.EVENT_BUS.post(new EntityKillEvent.Post(event.getSource().getDirectEntity(), event, true));
         }
-        event.setCanceled(false);//不允许阻止事件
+        event.setCanceled(false);// 不允许阻止事件
     }
 
     /**
-     * 在实体攻击时触发，转发自{@link net.neoforged.neoforge.common.damagesource.DamageContainer 伤害序列}系列事件。<p>
+     * 在实体攻击时触发，转发自{@link net.neoforged.neoforge.common.damagesource.DamageContainer 伤害序列}系列事件。
+     * <p>
      * 用于适应实体事件转发系统。
      * <p>
-     * Fired when entity attack, distributed from events related to {@link net.neoforged.neoforge.common.damagesource.DamageContainer damage sequence}.<p>
+     * Fired when entity attack, distributed from events related to
+     * {@link net.neoforged.neoforge.common.damagesource.DamageContainer damage sequence}.
+     * <p>
      * Used to adapt to entity events distribute system.
      */
     public abstract static class EntityAttackEvent extends EntityEvent {
-        //如果主体实体为中间实体，此值为true。
-        //true if the entity is a intermediate entity.
+
+        // 如果主体实体为中间实体，此值为true。
+        // true if the entity is a intermediate entity.
         public final boolean isIntermediateEntity;
 
         public EntityAttackEvent(Entity entity, boolean isIntermediateEntity) {
@@ -164,11 +168,13 @@ public class EventConsumer {
         }
 
         /**
-         * 在实体尝试对目标造成伤害时触发。转发自{@link LivingIncomingDamageEvent}最高优先级，可取消。<p>
+         * 在实体尝试对目标造成伤害时触发。转发自{@link LivingIncomingDamageEvent}最高优先级，可取消。
+         * <p>
          * Fired when entity attempted to cause damage to a target. Distributed from {@link LivingIncomingDamageEvent}
          * with the highest priority and is cancellable.
          */
         public static class Income extends EntityAttackEvent implements ICancellableEvent {
+
             public final LivingIncomingDamageEvent origin;
 
             public Income(Entity entity, LivingIncomingDamageEvent event, boolean isInBetweenEntity) {
@@ -178,10 +184,13 @@ public class EventConsumer {
         }
 
         /**
-         * 在实体对目标造成的伤害被计算前触发。转发自{@link LivingDamageEvent.Pre}最高优先级。<p>
-         * Fired before damage value is calculated. Distributed from {@link LivingDamageEvent.Pre} with the highest priority.
+         * 在实体对目标造成的伤害被计算前触发。转发自{@link LivingDamageEvent.Pre}最高优先级。
+         * <p>
+         * Fired before damage value is calculated. Distributed from {@link LivingDamageEvent.Pre} with the highest
+         * priority.
          */
         public static class Pre extends EntityAttackEvent {
+
             public final LivingDamageEvent.Pre origin;
 
             public Pre(Entity entity, LivingDamageEvent.Pre event, boolean isInBetweenEntity) {
@@ -191,10 +200,13 @@ public class EventConsumer {
         }
 
         /**
-         * 在实体对目标造成的伤害被计算后触发。转发自{@link LivingDamageEvent.Post}最高优先级。<p>
-         * Fired after damage value is calculated. Distributed from {@link LivingDamageEvent.Post} with the highest priority.
+         * 在实体对目标造成的伤害被计算后触发。转发自{@link LivingDamageEvent.Post}最高优先级。
+         * <p>
+         * Fired after damage value is calculated. Distributed from {@link LivingDamageEvent.Post} with the highest
+         * priority.
          */
         public static class Post extends EntityAttackEvent {
+
             public final LivingDamageEvent.Post origin;
 
             public Post(Entity entity, LivingDamageEvent.Post event, boolean isInBetweenEntity) {
@@ -205,13 +217,16 @@ public class EventConsumer {
     }
 
     /**
-     * 在实体杀死目标时被触发，分别转发自{@link LivingDeathEvent}的最高与最低优先级。<p>
+     * 在实体杀死目标时被触发，分别转发自{@link LivingDeathEvent}的最高与最低优先级。
+     * <p>
      * 用于适应实体事件转发系统。
      * <p>
-     * Fired when entity kill the target, distributed from {@link LivingDeathEvent}'s highest and lowest priority.<p>
+     * Fired when entity kill the target, distributed from {@link LivingDeathEvent}'s highest and lowest priority.
+     * <p>
      * Used to adapt to entity events distribute system.
      */
     public abstract static class EntityKillEvent extends EntityEvent {
+
         public final LivingDeathEvent origin;
         public final boolean isIntermediateEntity;
 
@@ -222,12 +237,14 @@ public class EventConsumer {
         }
 
         public static class Pre extends EntityKillEvent implements ICancellableEvent {
+
             public Pre(Entity entity, LivingDeathEvent origin, boolean isInBetweenEntity) {
                 super(entity, origin, isInBetweenEntity);
             }
         }
 
         public static class Post extends EntityKillEvent {
+
             public Post(Entity entity, LivingDeathEvent origin, boolean isInBetweenEntity) {
                 super(entity, origin, isInBetweenEntity);
             }
@@ -235,13 +252,16 @@ public class EventConsumer {
     }
 
     /**
-     * 在实体加入世界后触发，转发自{@link GatherEntityDistributeEvent}的最低优先级。<p>
+     * 在实体加入世界后触发，转发自{@link GatherEntityDistributeEvent}的最低优先级。
+     * <p>
      * 可以在此事件中初始化监听器内容。
      * <p>
-     * Fired after entity join the world, distributed from {@link GatherEntityDistributeEvent} with the lowest priority.<p>
+     * Fired after entity join the world, distributed from {@link GatherEntityDistributeEvent} with the lowest priority.
+     * <p>
      * init your entity event listeners in this event.
      */
     public static class GatherEntityDistributeEvent extends EntityEvent {
+
         public GatherEntityDistributeEvent(Entity entity) {
             super(entity);
         }

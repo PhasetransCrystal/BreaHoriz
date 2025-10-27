@@ -1,21 +1,21 @@
 package com.phasetranscrystal.horiz;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.Event;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
-
 
 /**
  * 实体事件分发器，用于管理和分发事件给相应的监听器。
  */
 public class EntityEventDistribute {
 
-    //WARN 不要直接修改这些 请使用下面的add与remove
+    // WARN 不要直接修改这些 请使用下面的add与remove
     private final Multimap<Class<? extends Event>, Consumer<? extends Event>> listeners = HashMultimap.create();
     private final MarkedTreeElement markedListeners = new MarkedTreeElement();
     private final HashMap<Class<? extends Event>, Integer> eventHashCache = new HashMap<>();
@@ -91,7 +91,6 @@ public class EntityEventDistribute {
         return true;
     }
 
-
     /**
      * 消费并处理事件。
      *
@@ -100,10 +99,9 @@ public class EntityEventDistribute {
      */
     public <T extends Event> void post(T event) {
         if (!listeners.containsKey(event.getClass()) ||
-                (eventHashCache.containsKey(event.getClass()) && eventHashCache.get(event.getClass()).equals(event.hashCode()))
-        ) return;
+                (eventHashCache.containsKey(event.getClass()) && eventHashCache.get(event.getClass()).equals(event.hashCode())))
+            return;
         List.copyOf(listeners.get(event.getClass())).forEach(consumer -> ((Consumer<T>) consumer).accept(event));
         eventHashCache.put(event.getClass(), event.hashCode());
     }
 }
-

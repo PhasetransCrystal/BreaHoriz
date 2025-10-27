@@ -1,0 +1,15 @@
+repositories {
+    mavenLocal()
+    maven {
+        url = "https://cursemaven.com" // CurseForge模组仓库
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        url 'https://www.jitpack.io' // GitHub模组仓库
+        content {
+            includeGroup "com.github.TechnoChronicle"
+        }
+    }
+}
